@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Let's Get Started</title>
+  <meta name="description" content="A few questions about your business so we can start the conversation.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="intro">
+      <h1>Let's get started</h1>
+      <p>A few questions about your business so we can come prepared to our first conversation.
+        It takes about 5 minutes and nothing here is binding. Short answers are fine.</p>
+      <p class="note">Your answers are saved in this browser as you type, so you can come back later.</p>
+    </header>
+
+    <form id="contact-form" class="form" name="first-contact" method="POST" action="/thanks.html"
+          data-netlify="true" netlify-honeypot="bot-field" novalidate>
+      <input type="hidden" name="form-name" value="first-contact">
+      <p class="hp" aria-hidden="true">
+        <label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+      </p>
+
+      <!-- ===== Contact details ===== -->
+      <fieldset class="section">
+        <legend>About you</legend>
+
+        <div class="grid">
+          <div class="field">
+            <label for="name">Name <span class="req" aria-hidden="true">*</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" required>
+            <p class="error" id="name-error" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" required>
+            <p class="error" id="email-error" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label for="company">Company <span class="opt">(optional)</span></label>
+            <input id="company" name="company" type="text" autocomplete="organization">
+          </div>
+
+          <div class="field">
+            <label for="current-website">Current website <span class="opt">(optional)</span></label>
+            <input id="current-website" name="current-website" type="text" inputmode="url" placeholder="example.com">
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- ===== Questions =====
+           To add a question: copy one <div class="field question"> block,
+           give it a unique id / name, and update the label and hint. -->
+      <fieldset class="section">
+        <legend>Your business</legend>
+
+        <div class="field question">
+          <label for="business">Describe your business in a couple of sentences <span class="req" aria-hidden="true">*</span></label>
+          <p class="hint" id="business-hint">What you do, and what makes you different.</p>
+          <textarea id="business" name="business" rows="3" required aria-describedby="business-hint business-error"></textarea>
+          <p class="error" id="business-error" aria-live="polite"></p>
+        </div>
+
+        <div class="field question">
+          <label for="goals">What are your goals with the website? <span class="req" aria-hidden="true">*</span></label>
+          <p class="hint" id="goals-hint">For example: more enquiries, selling online, looking more credible, saving time.</p>
+          <textarea id="goals" name="goals" rows="3" required aria-describedby="goals-hint goals-error"></textarea>
+          <p class="error" id="goals-error" aria-live="polite"></p>
+        </div>
+
+        <div class="field question">
+          <label for="clients">Who are your clients?</label>
+          <p class="hint" id="clients-hint">Who they are, what they need, how they usually find you.</p>
+          <textarea id="clients" name="clients" rows="3" aria-describedby="clients-hint"></textarea>
+        </div>
+
+        <div class="field question">
+          <label for="competitors">Who are your competitors?</label>
+          <p class="hint" id="competitors-hint">Names or links. Rough is fine.</p>
+          <textarea id="competitors" name="competitors" rows="3" aria-describedby="competitors-hint"></textarea>
+        </div>
+
+        <div class="field question">
+          <label for="liked-websites">Do you have websites that you like?</label>
+          <p class="hint" id="liked-websites-hint">Paste links and say what you like about each one: the look, the feel, a feature.</p>
+          <textarea id="liked-websites" name="liked-websites" rows="3" aria-describedby="liked-websites-hint"></textarea>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="submit" class="submit">Send answers</button>
+        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
+    <section id="success" class="success" hidden tabindex="-1">
+      <h2>Thank you!</h2>
+      <p>Your answers are on their way. I'll read them and get back to you soon.</p>
+    </section>
+  </main>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

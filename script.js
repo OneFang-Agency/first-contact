@@ -65,7 +65,7 @@
   const themeButtons = document.querySelectorAll('[data-set-theme]');
   // Browser toolbar color on mobile follows the chosen theme
   const themeMetas = document.querySelectorAll('meta[name="theme-color"]');
-  const THEME_COLORS = { light: '#f1f3f0', dark: '#141618' };
+  const THEME_COLORS = { light: '#f1f6f7', dark: '#141618' };
   themeMetas.forEach((m) => { m.dataset.systemColor = m.content; });
   function setTheme(theme, remember) {
     if (theme === 'light' || theme === 'dark') document.documentElement.setAttribute('data-theme', theme);

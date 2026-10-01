@@ -1,14 +1,20 @@
 /* ---------- Tokens ---------- */
 :root {
-  --paper: #f1f3f0;
-  --field: #e6e9e5;
+  --paper: #f1f6f7;
+  --field: #ffffff;
   --field-focus: #ffffff;
-  --ink: #191d21;
-  --muted: #5d656c;
-  --rule: #cdd2d0;
-  --accent: #5a2a4f;
-  --accent-ink: #ffffff;
-  --accent-soft: rgba(90, 42, 79, 0.16);
+  --field-border: #d3e0e3;
+  --ink: #0e1a1f;
+  --muted: #56656b;
+  --rule: #d3dfe2;
+  /* Bright cyan for fills (button, progress, highlight, focus glow).
+     It's too light for text on a light background, so text, borders
+     and outlines use --accent-text, a darker cyan. */
+  --accent: #1be7ff;
+  --accent-text: #00717f;
+  --accent-ink: #0e1a1f;
+  --accent-soft: rgba(27, 231, 255, 0.3);
+  --highlight: rgba(27, 231, 255, 0.4);
   --error: #a3261b;
 
   --serif: "Noto Serif Georgian", Georgia, serif;
@@ -21,12 +27,15 @@
     --paper: #141618;
     --field: #1d2023;
     --field-focus: #22262a;
+    --field-border: transparent;
+    --highlight: rgba(27, 231, 255, 0.24);
     --ink: #e7e8e4;
     --muted: #9aa1a6;
     --rule: #30353a;
-    --accent: #d7a3c5;
-    --accent-ink: #1d1019;
-    --accent-soft: rgba(215, 163, 197, 0.22);
+    --accent: #1be7ff;
+    --accent-text: #1be7ff;
+    --accent-ink: #06262b;
+    --accent-soft: rgba(27, 231, 255, 0.22);
     --error: #ff9a8f;
     color-scheme: dark;
   }
@@ -35,12 +44,15 @@
   --paper: #141618;
   --field: #1d2023;
   --field-focus: #22262a;
+  --field-border: transparent;
+  --highlight: rgba(27, 231, 255, 0.24);
   --ink: #e7e8e4;
   --muted: #9aa1a6;
   --rule: #30353a;
-  --accent: #d7a3c5;
-  --accent-ink: #1d1019;
-  --accent-soft: rgba(215, 163, 197, 0.22);
+  --accent: #1be7ff;
+  --accent-text: #1be7ff;
+  --accent-ink: #06262b;
+  --accent-soft: rgba(27, 231, 255, 0.22);
   --error: #ff9a8f;
   color-scheme: dark;
 }
@@ -72,6 +84,16 @@ html[lang="ka"] [lang="en"]:not([data-set-lang]):not(.show-all-langs *),
 html[lang="en"] [lang="ka"]:not([data-set-lang]):not(.show-all-langs *) {
   display: none;
 }
+
+/* English: Montserrat Alternates for titles, Montserrat for everything else
+   (Montserrat has no Georgian letters, so Georgian keeps the Noto fonts) */
+html[lang="en"],
+[lang="en"]:not(html):not([data-set-lang]) {
+  --serif: "Montserrat Alternates", "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --sans: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+/* thanks.html shows both languages at once */
+p[lang="en"], a > [lang="en"] { font-family: var(--sans); }
 
 /* ---------- Progress ---------- */
 .progress {
@@ -170,6 +192,15 @@ html[lang="en"] [lang="ka"]:not([data-set-lang]):not(.show-all-langs *) {
   margin: 0 0 14px;
   max-width: 36em;
 }
+/* The two facts that make starting easy: how long it takes, and no commitment */
+.lede mark {
+  color: var(--ink);
+  font-weight: 600;
+  background: linear-gradient(transparent 38%, var(--highlight) 38%, var(--highlight) 94%, transparent 94%);
+  padding: 0 0.1em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
 .note { margin: 0; color: var(--muted); font-size: 0.92rem; }
 
 /* ---------- Questions ---------- */
@@ -200,7 +231,7 @@ html[lang="en"] [lang="ka"]:not([data-set-lang]):not(.show-all-langs *) {
   transition: color 0.2s;
 }
 .question:focus-within::before,
-.question.is-answered::before { color: var(--accent); }
+.question.is-answered::before { color: var(--accent-text); }
 
 .question > label {
   display: block;
@@ -221,7 +252,7 @@ html[lang="en"] [lang="ka"]:not([data-set-lang]):not(.show-all-langs *) {
 }
 
 .req {
-  color: var(--accent);
+  color: var(--accent-text);
   margin-left: 0.2em;
 }
 
@@ -234,7 +265,7 @@ textarea {
   font-size: 1.05rem; /* ≥16px, so iOS doesn't zoom */
   color: var(--ink);
   background: var(--field);
-  border: 1.5px solid transparent;
+  border: 1.5px solid var(--field-border);
   border-radius: 14px;
   padding: 14px 16px;
   transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
@@ -250,14 +281,14 @@ textarea::placeholder { color: var(--muted); opacity: 0.6; }
 
 @media (hover: hover) {
   input:hover,
-  textarea:hover { border-color: var(--rule); }
+  textarea:hover { border-color: var(--muted); }
 }
 
 input:focus,
 textarea:focus {
   outline: none;
   background: var(--field-focus);
-  border-color: var(--accent);
+  border-color: var(--accent-text);
   box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
@@ -342,7 +373,7 @@ textarea:focus {
 .switch button:focus-visible,
 .submit:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent-text);
   outline-offset: 3px;
 }
 
@@ -359,7 +390,7 @@ a:focus-visible {
   margin: 0 0 20px;
 }
 .success p { margin: 0 0 12px; font-size: 1.15rem; max-width: 34em; }
-.success a { color: var(--accent); }
+.success a { color: var(--accent-text); }
 .success hr { border: 0; border-top: 1px solid var(--rule); margin: 40px 0; }
 
 /* ---------- Small screens ---------- */

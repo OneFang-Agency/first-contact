@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="ka">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,19 +9,21 @@
     try {
       var theme = localStorage.getItem('first-contact-theme');
       if (theme === 'light' || theme === 'dark') document.documentElement.setAttribute('data-theme', theme);
-    } catch (e) {}
+    } catch (e) { }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400..700&family=Noto+Serif+Georgian:wdth,wght@62.5..100,400..700&display=swap">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400..700&family=Noto+Serif+Georgian:wdth,wght@62.5..100,400..700&family=Montserrat:wght@400..700&family=Montserrat+Alternates:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <!-- Shown when JavaScript is off, so both languages are always visible here -->
   <main class="page show-all-langs">
     <section class="success">
       <h2 lang="ka">გმადლობთ!</h2>
-      <p lang="ka">პასუხები გაიგზავნა. გავეცნობი და მალე დაგიკავშირდებით.</p>
+      <p lang="ka">პასუხები გაიგზავნა. გავეცნობით და მალე დაგიკავშირდებით.</p>
       <hr>
       <h2 lang="en">Thank you!</h2>
       <p lang="en">Your answers are on their way. I'll read them and get back to you soon.</p>
@@ -28,4 +31,5 @@
     </section>
   </main>
 </body>
+
 </html>

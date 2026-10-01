@@ -37,4 +37,20 @@ One-time setup in Netlify:
 1. Add new site → Import an existing project → GitHub → pick this repo, branch `master`.
 2. Leave the build command empty. The publish directory is `.` (already set in `netlify.toml`).
 3. Site configuration → Forms → enable form detection, then redeploy.
-4. Forms → Form notifications → add an email notification for `first-contact`.
+4. Email notifications: see below.
+
+## Submission emails
+
+Netlify's built-in form emails can't be styled, so `netlify/functions/submission-created.mjs` sends its own. Netlify runs it automatically for every submission. The email has only the language the client used (`language` field). English uses Montserrat Alternates for titles and Montserrat for answers. Georgian uses the site's Noto Georgian fonts, because Montserrat has no Georgian letters. Replying to the email goes straight to the client.
+
+If you add or rename a question, update `TEXT` at the top of that file as well.
+
+Setup:
+1. Create a free account at [resend.com](https://resend.com), verify your sending domain, and create an API key.
+2. In Netlify → Site configuration → Environment variables, add:
+   - `RESEND_API_KEY`: the API key
+   - `NOTIFY_TO`: your address (comma-separate for several)
+   - `NOTIFY_FROM`: a sender on the verified domain, e.g. `First Contact <forms@yourdomain.com>`
+3. Redeploy. Then in Forms → Form notifications, remove the old built-in email so you don't get two.
+
+Web fonts show in Apple Mail and iOS Mail. Gmail and Outlook don't load web fonts and fall back to Arial (English) or Sylfaen/Arial (Georgian).

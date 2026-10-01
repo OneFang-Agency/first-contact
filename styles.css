@@ -32,15 +32,48 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 17px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font: 17px/1.55 "Noto Sans Georgian", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 .page {
   max-width: 680px;
   margin: 0 auto;
-  padding: 56px 16px 80px;
+  padding: 24px 16px 80px;
 }
+
+/* ---------- Languages ----------
+   Every text exists twice: <span lang="ka"> and <span lang="en">.
+   The <html lang> attribute decides which one is shown. */
+html[lang="ka"] [lang="en"]:not([data-set-lang]):not(.show-all-langs *),
+html[lang="en"] [lang="ka"]:not([data-set-lang]):not(.show-all-langs *) {
+  display: none;
+}
+
+.lang-switch {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-bottom: 32px;
+}
+.lang-switch button {
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 5px 12px;
+  cursor: pointer;
+}
+.lang-switch button:hover { color: var(--text); }
+.lang-switch button[aria-pressed="true"] {
+  color: var(--text);
+  border-color: var(--border);
+  background: var(--surface);
+  font-weight: 600;
+}
+.lang-switch button:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--focus); }
 
 /* ---------- Intro ---------- */
 .intro h1 {
@@ -66,11 +99,14 @@ body {
 .section legend {
   font-size: 0.8rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
   color: var(--muted);
   padding: 0 8px;
   margin-left: -8px;
+}
+
+html[lang="en"] .section legend {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .grid {
@@ -79,7 +115,12 @@ body {
   gap: 0 16px;
 }
 @media (max-width: 560px) {
-  .grid { grid-template-columns: 1fr; }
+  html[lang="en"] .section legend {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.grid { grid-template-columns: 1fr; }
   .section { padding: 20px 16px; }
 }
 
@@ -202,4 +243,5 @@ input:focus, textarea:focus {
 .success:focus { outline: none; }
 .success h2 { margin: 0 0 8px; font-size: 1.6rem; }
 .success p { margin: 0 0 8px; color: var(--muted); }
+.success hr { border: 0; border-top: 1px solid var(--border); margin: 24px auto; max-width: 120px; }
 .success a { color: var(--accent); }

@@ -1,52 +1,76 @@
 <!doctype html>
-<html lang="en">
+<html lang="ka">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Let's Get Started</title>
-  <meta name="description" content="A few questions about your business so we can start the conversation.">
+  <title>დავიწყოთ</title>
+  <meta name="description" content="რამდენიმე კითხვა თქვენი ბიზნესის შესახებ / A few questions about your business.">
+  <!-- Pick the language before first paint: ?lang=en in the URL, then the saved choice, else Georgian -->
+  <script>
+    (function () {
+      var lang = new URLSearchParams(location.search).get('lang');
+      if (lang !== 'ka' && lang !== 'en') {
+        try { lang = localStorage.getItem('first-contact-lang'); } catch (e) {}
+      }
+      if (lang === 'en') document.documentElement.lang = 'en';
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="page">
+    <nav class="lang-switch" aria-label="Language / ენა">
+      <button type="button" data-set-lang="ka" lang="ka">ქართული</button>
+      <button type="button" data-set-lang="en" lang="en">English</button>
+    </nav>
+
     <header class="intro">
-      <h1>Let's get started</h1>
-      <p>A few questions about your business so we can come prepared to our first conversation.
-        It takes about 5 minutes and nothing here is binding. Short answers are fine.</p>
-      <p class="note">Your answers are saved in this browser as you type, so you can come back later.</p>
+      <h1><span lang="ka">დავიწყოთ</span><span lang="en">Let's get started</span></h1>
+      <p>
+        <span lang="ka">რამდენიმე კითხვა თქვენი ბიზნესის შესახებ, რომ პირველ საუბარს მომზადებული შევხვდეთ. ამას დაახლოებით 5 წუთი სჭირდება და არაფერს გავალდებულებთ. მოკლე პასუხებიც საკმარისია.</span>
+        <span lang="en">A few questions about your business so we can come prepared to our first conversation. It takes about 5 minutes and nothing here is binding. Short answers are fine.</span>
+      </p>
+      <p class="note">
+        <span lang="ka">პასუხები ავტომატურად ინახება ამ ბრაუზერში, ასე რომ შეგიძლიათ მოგვიანებით დაბრუნდეთ.</span>
+        <span lang="en">Your answers are saved in this browser as you type, so you can come back later.</span>
+      </p>
     </header>
 
     <form id="contact-form" class="form" name="first-contact" method="POST" action="/thanks.html"
           data-netlify="true" netlify-honeypot="bot-field" novalidate>
       <input type="hidden" name="form-name" value="first-contact">
+      <input type="hidden" name="language" id="language-field" value="ka">
       <p class="hp" aria-hidden="true">
         <label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
       </p>
 
       <!-- ===== Contact details ===== -->
       <fieldset class="section">
-        <legend>About you</legend>
+        <legend><span lang="ka">თქვენ შესახებ</span><span lang="en">About you</span></legend>
 
         <div class="grid">
           <div class="field">
-            <label for="name">Name <span class="req" aria-hidden="true">*</span></label>
+            <label for="name"><span lang="ka">სახელი</span><span lang="en">Name</span> <span class="req" aria-hidden="true">*</span></label>
             <input id="name" name="name" type="text" autocomplete="name" required>
             <p class="error" id="name-error" aria-live="polite"></p>
           </div>
 
           <div class="field">
-            <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+            <label for="email"><span lang="ka">ელ. ფოსტა</span><span lang="en">Email</span> <span class="req" aria-hidden="true">*</span></label>
             <input id="email" name="email" type="email" autocomplete="email" required>
             <p class="error" id="email-error" aria-live="polite"></p>
           </div>
 
           <div class="field">
-            <label for="company">Company <span class="opt">(optional)</span></label>
+            <label for="company"><span lang="ka">კომპანია</span><span lang="en">Company</span> <span class="opt"><span lang="ka">(არასავალდებულო)</span><span lang="en">(optional)</span></span></label>
             <input id="company" name="company" type="text" autocomplete="organization">
           </div>
 
           <div class="field">
-            <label for="current-website">Current website <span class="opt">(optional)</span></label>
+            <label for="current-website"><span lang="ka">არსებული ვებსაიტი</span><span lang="en">Current website</span> <span class="opt"><span lang="ka">(არასავალდებულო)</span><span lang="en">(optional)</span></span></label>
             <input id="current-website" name="current-website" type="text" inputmode="url" placeholder="example.com">
           </div>
         </div>
@@ -54,52 +78,56 @@
 
       <!-- ===== Questions =====
            To add a question: copy one <div class="field question"> block,
-           give it a unique id / name, and update the label and hint. -->
+           give it a unique id / name, and write the label and hint in both
+           <span lang="ka"> and <span lang="en">. -->
       <fieldset class="section">
-        <legend>Your business</legend>
+        <legend><span lang="ka">თქვენი ბიზნესი</span><span lang="en">Your business</span></legend>
 
         <div class="field question">
-          <label for="business">Describe your business in a couple of sentences <span class="req" aria-hidden="true">*</span></label>
-          <p class="hint" id="business-hint">What you do, and what makes you different.</p>
+          <label for="business"><span lang="ka">აღწერეთ თქვენი ბიზნესი რამდენიმე წინადადებით</span><span lang="en">Describe your business in a couple of sentences</span> <span class="req" aria-hidden="true">*</span></label>
+          <p class="hint" id="business-hint"><span lang="ka">რას აკეთებთ და რით გამოირჩევით.</span><span lang="en">What you do, and what makes you different.</span></p>
           <textarea id="business" name="business" rows="3" required aria-describedby="business-hint business-error"></textarea>
           <p class="error" id="business-error" aria-live="polite"></p>
         </div>
 
         <div class="field question">
-          <label for="goals">What are your goals with the website? <span class="req" aria-hidden="true">*</span></label>
-          <p class="hint" id="goals-hint">For example: more enquiries, selling online, looking more credible, saving time.</p>
+          <label for="goals"><span lang="ka">რა მიზნები გაქვთ ვებსაიტთან დაკავშირებით?</span><span lang="en">What are your goals with the website?</span> <span class="req" aria-hidden="true">*</span></label>
+          <p class="hint" id="goals-hint"><span lang="ka">მაგალითად: მეტი მოთხოვნა, ონლაინ გაყიდვები, მეტი სანდოობა, დროის დაზოგვა.</span><span lang="en">For example: more enquiries, selling online, looking more credible, saving time.</span></p>
           <textarea id="goals" name="goals" rows="3" required aria-describedby="goals-hint goals-error"></textarea>
           <p class="error" id="goals-error" aria-live="polite"></p>
         </div>
 
         <div class="field question">
-          <label for="clients">Who are your clients?</label>
-          <p class="hint" id="clients-hint">Who they are, what they need, how they usually find you.</p>
+          <label for="clients"><span lang="ka">ვინ არიან თქვენი კლიენტები?</span><span lang="en">Who are your clients?</span></label>
+          <p class="hint" id="clients-hint"><span lang="ka">ვინ არიან, რა სჭირდებათ და ჩვეულებრივ როგორ გპოულობენ.</span><span lang="en">Who they are, what they need, how they usually find you.</span></p>
           <textarea id="clients" name="clients" rows="3" aria-describedby="clients-hint"></textarea>
         </div>
 
         <div class="field question">
-          <label for="competitors">Who are your competitors?</label>
-          <p class="hint" id="competitors-hint">Names or links. Rough is fine.</p>
+          <label for="competitors"><span lang="ka">ვინ არიან თქვენი კონკურენტები?</span><span lang="en">Who are your competitors?</span></label>
+          <p class="hint" id="competitors-hint"><span lang="ka">სახელები ან ბმულები. მიახლოებითიც კარგია.</span><span lang="en">Names or links. Rough is fine.</span></p>
           <textarea id="competitors" name="competitors" rows="3" aria-describedby="competitors-hint"></textarea>
         </div>
 
         <div class="field question">
-          <label for="liked-websites">Do you have websites that you like?</label>
-          <p class="hint" id="liked-websites-hint">Paste links and say what you like about each one: the look, the feel, a feature.</p>
+          <label for="liked-websites"><span lang="ka">არის ვებსაიტები, რომლებიც მოგწონთ?</span><span lang="en">Do you have websites that you like?</span></label>
+          <p class="hint" id="liked-websites-hint"><span lang="ka">ჩასვით ბმულები და მიუთითეთ, რა მოგწონთ თითოეულში: დიზაინი, განწყობა, რომელიმე ფუნქცია.</span><span lang="en">Paste links and say what you like about each one: the look, the feel, a feature.</span></p>
           <textarea id="liked-websites" name="liked-websites" rows="3" aria-describedby="liked-websites-hint"></textarea>
         </div>
       </fieldset>
 
       <div class="actions">
-        <button type="submit" class="submit">Send answers</button>
+        <button type="submit" class="submit"><span lang="ka">პასუხების გაგზავნა</span><span lang="en">Send answers</span></button>
         <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
       </div>
     </form>
 
     <section id="success" class="success" hidden tabindex="-1">
-      <h2>Thank you!</h2>
-      <p>Your answers are on their way. I'll read them and get back to you soon.</p>
+      <h2><span lang="ka">გმადლობთ!</span><span lang="en">Thank you!</span></h2>
+      <p>
+        <span lang="ka">თქვენი პასუხები გაიგზავნა. გავეცნობი და მალე დაგიკავშირდებით.</span>
+        <span lang="en">Your answers are on their way. I'll read them and get back to you soon.</span>
+      </p>
     </section>
   </main>
 

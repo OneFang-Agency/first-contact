@@ -3,11 +3,58 @@
   if (!form) return;
 
   const STORAGE_KEY = 'first-contact-draft';
+  const LANG_KEY = 'first-contact-lang';
   const status = document.getElementById('form-status');
   const submitBtn = form.querySelector('.submit');
   const success = document.getElementById('success');
   const textareas = form.querySelectorAll('textarea');
   const savable = form.querySelectorAll('input:not([type=hidden]):not([name=bot-field]), textarea');
+
+  // ---------- Language ----------
+  const MESSAGES = {
+    ka: {
+      title: 'დავიწყოთ',
+      required: 'გთხოვთ, შეავსოთ ეს ველი.',
+      email: 'ელ. ფოსტის მისამართი არასწორი ჩანს. გთხოვთ, შეამოწმოთ.',
+      missing: 'რამდენიმე სავალდებულო პასუხი აკლია.',
+      sending: 'იგზავნება…',
+      failed: 'გაგზავნისას შეცდომა მოხდა. პასუხები შენახულია, გთხოვთ, ცოტა ხანში სცადოთ ხელახლა.',
+    },
+    en: {
+      title: "Let's Get Started",
+      required: 'Please fill this in.',
+      email: 'That email doesn’t look right. Please check it.',
+      missing: 'A few required answers are missing.',
+      sending: 'Sending…',
+      failed: 'Something went wrong while sending. Your answers are saved, so please try again in a moment.',
+    },
+  };
+  const langField = document.getElementById('language-field');
+  const langButtons = document.querySelectorAll('[data-set-lang]');
+  let lang = document.documentElement.lang === 'en' ? 'en' : 'ka';
+  const t = (key) => MESSAGES[lang][key];
+
+  function setLang(next, remember) {
+    lang = next;
+    document.documentElement.lang = next;
+    document.title = t('title');
+    langField.value = next;
+    langButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.setLang === next)));
+    // Re-render any visible messages in the new language
+    form.querySelectorAll('[aria-invalid="true"]').forEach(validateField);
+    if (status.dataset.key) status.textContent = t(status.dataset.key);
+    textareas.forEach(autosize);
+    if (remember) {
+      try { localStorage.setItem(LANG_KEY, next); } catch (e) { /* ignore */ }
+    }
+  }
+  langButtons.forEach((b) => b.addEventListener('click', () => setLang(b.dataset.setLang, true)));
+
+  function setStatus(key, isError) {
+    status.dataset.key = key || '';
+    status.textContent = key ? t(key) : '';
+    status.classList.toggle('is-error', !!isError);
+  }
 
   // ---------- Auto-growing textareas ----------
   function autosize(el) {
@@ -34,14 +81,15 @@
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
   }
 
+  setLang(lang, false);
   loadDraft();
   textareas.forEach(autosize);
   form.addEventListener('input', saveDraft);
 
   // ---------- Validation ----------
   function messageFor(el) {
-    if (el.validity.valueMissing) return 'Please fill this in.';
-    if (el.validity.typeMismatch && el.type === 'email') return 'That email doesn’t look right. Please check it.';
+    if (el.validity.valueMissing) return t('required');
+    if (el.validity.typeMismatch && el.type === 'email') return t('email');
     return '';
   }
   function validateField(el) {
@@ -70,17 +118,14 @@
       if (!validateField(el) && !firstInvalid) firstInvalid = el;
     });
     if (firstInvalid) {
-      status.textContent = 'A few required answers are missing.';
-      status.classList.add('is-error');
+      setStatus('missing', true);
       firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
       firstInvalid.focus({ preventScroll: true });
       return;
     }
 
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending…';
-    status.textContent = '';
-    status.classList.remove('is-error');
+    setStatus('sending', false);
 
     try {
       const res = await fetch('/', {
@@ -91,15 +136,14 @@
       if (!res.ok) throw new Error('HTTP ' + res.status);
 
       clearDraft();
+      setStatus('', false);
       form.hidden = true;
       success.hidden = false;
       success.focus();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Send answers';
-      status.textContent = 'Something went wrong while sending. Your answers are saved, so please try again in a moment.';
-      status.classList.add('is-error');
+      setStatus('failed', true);
     }
   });
 })();

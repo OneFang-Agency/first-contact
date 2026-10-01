@@ -4,6 +4,7 @@
 
   const STORAGE_KEY = 'first-contact-draft';
   const LANG_KEY = 'first-contact-lang';
+  const THEME_KEY = 'first-contact-theme';
   const status = document.getElementById('form-status');
   const submitBtn = form.querySelector('.submit');
   const success = document.getElementById('success');
@@ -19,6 +20,9 @@
       missing: 'რამდენიმე სავალდებულო პასუხი აკლია.',
       sending: 'იგზავნება…',
       failed: 'გაგზავნისას შეცდომა მოხდა. პასუხები შენახულია, გთხოვთ, ცოტა ხანში სცადოთ ხელახლა.',
+      system: 'სისტემური',
+      light: 'ნათელი',
+      dark: 'მუქი',
     },
     en: {
       title: "Let's Get Started",
@@ -27,6 +31,9 @@
       missing: 'A few required answers are missing.',
       sending: 'Sending…',
       failed: 'Something went wrong while sending. Your answers are saved, so please try again in a moment.',
+      system: 'System',
+      light: 'Light',
+      dark: 'Dark',
     },
   };
   const langField = document.getElementById('language-field');
@@ -40,6 +47,10 @@
     document.title = t('title');
     langField.value = next;
     langButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.setLang === next)));
+    themeButtons.forEach((b) => {
+      b.setAttribute('aria-label', t(b.dataset.setTheme));
+      b.title = t(b.dataset.setTheme);
+    });
     // Re-render any visible messages in the new language
     form.querySelectorAll('[aria-invalid="true"]').forEach(validateField);
     if (status.dataset.key) status.textContent = t(status.dataset.key);
@@ -49,6 +60,36 @@
     }
   }
   langButtons.forEach((b) => b.addEventListener('click', () => setLang(b.dataset.setLang, true)));
+
+  // ---------- Theme: system (default), light or dark ----------
+  const themeButtons = document.querySelectorAll('[data-set-theme]');
+  function setTheme(theme, remember) {
+    if (theme === 'light' || theme === 'dark') document.documentElement.setAttribute('data-theme', theme);
+    else document.documentElement.removeAttribute('data-theme');
+    themeButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.setTheme === theme)));
+    if (remember) {
+      try {
+        if (theme === 'system') localStorage.removeItem(THEME_KEY);
+        else localStorage.setItem(THEME_KEY, theme);
+      } catch (e) { /* ignore */ }
+    }
+  }
+  themeButtons.forEach((b) => b.addEventListener('click', () => setTheme(b.dataset.setTheme, true)));
+  setTheme(document.documentElement.getAttribute('data-theme') || 'system', false);
+
+  // ---------- Progress ----------
+  const progressFill = document.getElementById('progress-fill');
+  const answerable = form.querySelectorAll('.question textarea, .contact [required]');
+  function updateProgress() {
+    let done = 0;
+    answerable.forEach((el) => {
+      const answered = el.value.trim() !== '';
+      if (answered) done++;
+      const q = el.closest('.question');
+      if (q) q.classList.toggle('is-answered', answered);
+    });
+    progressFill.style.width = (done / answerable.length) * 100 + '%';
+  }
 
   function setStatus(key, isError) {
     status.dataset.key = key || '';
@@ -84,7 +125,8 @@
   setLang(lang, false);
   loadDraft();
   textareas.forEach(autosize);
-  form.addEventListener('input', saveDraft);
+  updateProgress();
+  form.addEventListener('input', () => { saveDraft(); updateProgress(); });
 
   // ---------- Validation ----------
   function messageFor(el) {
@@ -137,6 +179,7 @@
 
       clearDraft();
       setStatus('', false);
+      progressFill.style.width = '100%';
       form.hidden = true;
       success.hidden = false;
       success.focus();

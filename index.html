@@ -5,36 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>დავიწყოთ</title>
   <meta name="description" content="რამდენიმე კითხვა თქვენი ბიზნესის შესახებ / A few questions about your business.">
-  <!-- Pick the language before first paint: ?lang=en in the URL, then the saved choice, else Georgian -->
+  <!-- Before first paint: pick language (?lang=en, then saved choice, else Georgian)
+       and theme (saved choice, else follow the system) -->
   <script>
     (function () {
-      var lang = new URLSearchParams(location.search).get('lang');
-      if (lang !== 'ka' && lang !== 'en') {
-        try { lang = localStorage.getItem('first-contact-lang'); } catch (e) {}
-      }
-      if (lang === 'en') document.documentElement.lang = 'en';
+      var root = document.documentElement, lang, theme;
+      lang = new URLSearchParams(location.search).get('lang');
+      try {
+        if (lang !== 'ka' && lang !== 'en') lang = localStorage.getItem('first-contact-lang');
+        theme = localStorage.getItem('first-contact-theme');
+      } catch (e) {}
+      if (lang === 'en') root.lang = 'en';
+      if (theme === 'light' || theme === 'dark') root.setAttribute('data-theme', theme);
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400..700&family=Noto+Serif+Georgian:wdth,wght@62.5..100,400..700&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="page">
-    <nav class="lang-switch" aria-label="Language / ენა">
-      <button type="button" data-set-lang="ka" lang="ka">ქართული</button>
-      <button type="button" data-set-lang="en" lang="en">English</button>
-    </nav>
+  <div class="progress" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div>
 
+  <header class="topbar">
+    <div class="switch" role="group" aria-label="ენა / Language">
+      <button type="button" data-set-lang="ka" lang="ka">ქარ</button>
+      <button type="button" data-set-lang="en" lang="en">EN</button>
+    </div>
+    <div class="switch" role="group" id="theme-switch" aria-label="თემა / Theme">
+      <button type="button" data-set-theme="system" aria-label="სისტემური">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+      </button>
+      <button type="button" data-set-theme="light" aria-label="ნათელი">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button type="button" data-set-theme="dark" aria-label="მუქი">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="page">
     <header class="intro">
       <h1><span lang="ka">დავიწყოთ</span><span lang="en">Let's get started</span></h1>
-      <p>
-        <span lang="ka">რამდენიმე კითხვა თქვენი ბიზნესის შესახებ, რომ პირველ საუბარს მომზადებული შევხვდეთ. ამას დაახლოებით 5 წუთი სჭირდება და არაფერს გავალდებულებთ. მოკლე პასუხებიც საკმარისია.</span>
+      <p class="lede">
+        <span lang="ka">რამდენიმე კითხვა თქვენი ბიზნესის შესახებ, რომ პირველ საუბარს მომზადებული შევხვდეთ. დაახლოებით 5 წუთი სჭირდება და არაფერს გავალდებულებთ. მოკლე პასუხებიც საკმარისია.</span>
         <span lang="en">A few questions about your business so we can come prepared to our first conversation. It takes about 5 minutes and nothing here is binding. Short answers are fine.</span>
       </p>
       <p class="note">
-        <span lang="ka">პასუხები ავტომატურად ინახება ამ ბრაუზერში, ასე რომ შეგიძლიათ მოგვიანებით დაბრუნდეთ.</span>
+        <span lang="ka">პასუხები ავტომატურად ინახება ამ ბრაუზერში, შეგიძლიათ მოგვიანებით დაბრუნდეთ.</span>
         <span lang="en">Your answers are saved in this browser as you type, so you can come back later.</span>
       </p>
     </header>
@@ -47,74 +66,72 @@
         <label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
       </p>
 
+      <!-- ===== Questions =====
+           To add a question: copy one <div class="question"> block,
+           give it a unique id / name, and write the label and hint in both
+           <span lang="ka"> and <span lang="en">. Numbering is automatic. -->
+      <ol class="questions">
+        <li class="question">
+          <label for="business"><span lang="ka">აღწერეთ თქვენი ბიზნესი რამდენიმე წინადადებით</span><span lang="en">Describe your business in a couple of sentences</span><span class="req" aria-hidden="true">*</span></label>
+          <p class="hint" id="business-hint"><span lang="ka">რას აკეთებთ და რით გამოირჩევით.</span><span lang="en">What you do, and what makes you different.</span></p>
+          <textarea id="business" name="business" rows="3" required aria-describedby="business-hint business-error"></textarea>
+          <p class="error" id="business-error" aria-live="polite"></p>
+        </li>
+
+        <li class="question">
+          <label for="goals"><span lang="ka">რა მიზნები გაქვთ ვებსაიტთან დაკავშირებით?</span><span lang="en">What are your goals with the website?</span><span class="req" aria-hidden="true">*</span></label>
+          <p class="hint" id="goals-hint"><span lang="ka">მაგალითად: მეტი მოთხოვნა, ონლაინ გაყიდვები, მეტი სანდოობა, დროის დაზოგვა.</span><span lang="en">For example: more enquiries, selling online, looking more credible, saving time.</span></p>
+          <textarea id="goals" name="goals" rows="3" required aria-describedby="goals-hint goals-error"></textarea>
+          <p class="error" id="goals-error" aria-live="polite"></p>
+        </li>
+
+        <li class="question">
+          <label for="clients"><span lang="ka">ვინ არიან თქვენი კლიენტები?</span><span lang="en">Who are your clients?</span></label>
+          <p class="hint" id="clients-hint"><span lang="ka">ვინ არიან, რა სჭირდებათ და ჩვეულებრივ როგორ გპოულობენ.</span><span lang="en">Who they are, what they need, how they usually find you.</span></p>
+          <textarea id="clients" name="clients" rows="3" aria-describedby="clients-hint"></textarea>
+        </li>
+
+        <li class="question">
+          <label for="competitors"><span lang="ka">ვინ არიან თქვენი კონკურენტები?</span><span lang="en">Who are your competitors?</span></label>
+          <p class="hint" id="competitors-hint"><span lang="ka">სახელები ან ბმულები. მიახლოებითიც კარგია.</span><span lang="en">Names or links. Rough is fine.</span></p>
+          <textarea id="competitors" name="competitors" rows="3" aria-describedby="competitors-hint"></textarea>
+        </li>
+
+        <li class="question">
+          <label for="liked-websites"><span lang="ka">არის ვებსაიტები, რომლებიც მოგწონთ?</span><span lang="en">Do you have websites that you like?</span></label>
+          <p class="hint" id="liked-websites-hint"><span lang="ka">ჩასვით ბმულები და მიუთითეთ, რა მოგწონთ თითოეულში: დიზაინი, განწყობა, რომელიმე ფუნქცია.</span><span lang="en">Paste links and say what you like about each one: the look, the feel, a feature.</span></p>
+          <textarea id="liked-websites" name="liked-websites" rows="3" aria-describedby="liked-websites-hint"></textarea>
+        </li>
+      </ol>
+
       <!-- ===== Contact details ===== -->
-      <fieldset class="section">
-        <legend><span lang="ka">თქვენ შესახებ</span><span lang="en">About you</span></legend>
+      <section class="contact" aria-labelledby="contact-title">
+        <h2 id="contact-title"><span lang="ka">როგორ დაგიკავშირდეთ?</span><span lang="en">How can we reach you?</span></h2>
 
         <div class="grid">
           <div class="field">
-            <label for="name"><span lang="ka">სახელი</span><span lang="en">Name</span> <span class="req" aria-hidden="true">*</span></label>
-            <input id="name" name="name" type="text" autocomplete="name" required>
+            <label for="name"><span lang="ka">სახელი</span><span lang="en">Name</span><span class="req" aria-hidden="true">*</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" required aria-describedby="name-error">
             <p class="error" id="name-error" aria-live="polite"></p>
           </div>
 
           <div class="field">
-            <label for="email"><span lang="ka">ელ. ფოსტა</span><span lang="en">Email</span> <span class="req" aria-hidden="true">*</span></label>
-            <input id="email" name="email" type="email" autocomplete="email" required>
+            <label for="email"><span lang="ka">ელ. ფოსტა</span><span lang="en">Email</span><span class="req" aria-hidden="true">*</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-error">
             <p class="error" id="email-error" aria-live="polite"></p>
           </div>
 
           <div class="field">
-            <label for="company"><span lang="ka">კომპანია</span><span lang="en">Company</span> <span class="opt"><span lang="ka">(არასავალდებულო)</span><span lang="en">(optional)</span></span></label>
+            <label for="company"><span lang="ka">კომპანია</span><span lang="en">Company</span> <span class="opt"><span lang="ka">არასავალდებულო</span><span lang="en">optional</span></span></label>
             <input id="company" name="company" type="text" autocomplete="organization">
           </div>
 
           <div class="field">
-            <label for="current-website"><span lang="ka">არსებული ვებსაიტი</span><span lang="en">Current website</span> <span class="opt"><span lang="ka">(არასავალდებულო)</span><span lang="en">(optional)</span></span></label>
+            <label for="current-website"><span lang="ka">არსებული ვებსაიტი</span><span lang="en">Current website</span> <span class="opt"><span lang="ka">არასავალდებულო</span><span lang="en">optional</span></span></label>
             <input id="current-website" name="current-website" type="text" inputmode="url" placeholder="example.com">
           </div>
         </div>
-      </fieldset>
-
-      <!-- ===== Questions =====
-           To add a question: copy one <div class="field question"> block,
-           give it a unique id / name, and write the label and hint in both
-           <span lang="ka"> and <span lang="en">. -->
-      <fieldset class="section">
-        <legend><span lang="ka">თქვენი ბიზნესი</span><span lang="en">Your business</span></legend>
-
-        <div class="field question">
-          <label for="business"><span lang="ka">აღწერეთ თქვენი ბიზნესი რამდენიმე წინადადებით</span><span lang="en">Describe your business in a couple of sentences</span> <span class="req" aria-hidden="true">*</span></label>
-          <p class="hint" id="business-hint"><span lang="ka">რას აკეთებთ და რით გამოირჩევით.</span><span lang="en">What you do, and what makes you different.</span></p>
-          <textarea id="business" name="business" rows="3" required aria-describedby="business-hint business-error"></textarea>
-          <p class="error" id="business-error" aria-live="polite"></p>
-        </div>
-
-        <div class="field question">
-          <label for="goals"><span lang="ka">რა მიზნები გაქვთ ვებსაიტთან დაკავშირებით?</span><span lang="en">What are your goals with the website?</span> <span class="req" aria-hidden="true">*</span></label>
-          <p class="hint" id="goals-hint"><span lang="ka">მაგალითად: მეტი მოთხოვნა, ონლაინ გაყიდვები, მეტი სანდოობა, დროის დაზოგვა.</span><span lang="en">For example: more enquiries, selling online, looking more credible, saving time.</span></p>
-          <textarea id="goals" name="goals" rows="3" required aria-describedby="goals-hint goals-error"></textarea>
-          <p class="error" id="goals-error" aria-live="polite"></p>
-        </div>
-
-        <div class="field question">
-          <label for="clients"><span lang="ka">ვინ არიან თქვენი კლიენტები?</span><span lang="en">Who are your clients?</span></label>
-          <p class="hint" id="clients-hint"><span lang="ka">ვინ არიან, რა სჭირდებათ და ჩვეულებრივ როგორ გპოულობენ.</span><span lang="en">Who they are, what they need, how they usually find you.</span></p>
-          <textarea id="clients" name="clients" rows="3" aria-describedby="clients-hint"></textarea>
-        </div>
-
-        <div class="field question">
-          <label for="competitors"><span lang="ka">ვინ არიან თქვენი კონკურენტები?</span><span lang="en">Who are your competitors?</span></label>
-          <p class="hint" id="competitors-hint"><span lang="ka">სახელები ან ბმულები. მიახლოებითიც კარგია.</span><span lang="en">Names or links. Rough is fine.</span></p>
-          <textarea id="competitors" name="competitors" rows="3" aria-describedby="competitors-hint"></textarea>
-        </div>
-
-        <div class="field question">
-          <label for="liked-websites"><span lang="ka">არის ვებსაიტები, რომლებიც მოგწონთ?</span><span lang="en">Do you have websites that you like?</span></label>
-          <p class="hint" id="liked-websites-hint"><span lang="ka">ჩასვით ბმულები და მიუთითეთ, რა მოგწონთ თითოეულში: დიზაინი, განწყობა, რომელიმე ფუნქცია.</span><span lang="en">Paste links and say what you like about each one: the look, the feel, a feature.</span></p>
-          <textarea id="liked-websites" name="liked-websites" rows="3" aria-describedby="liked-websites-hint"></textarea>
-        </div>
-      </fieldset>
+      </section>
 
       <div class="actions">
         <button type="submit" class="submit"><span lang="ka">პასუხების გაგზავნა</span><span lang="en">Send answers</span></button>
@@ -125,7 +142,7 @@
     <section id="success" class="success" hidden tabindex="-1">
       <h2><span lang="ka">გმადლობთ!</span><span lang="en">Thank you!</span></h2>
       <p>
-        <span lang="ka">თქვენი პასუხები გაიგზავნა. გავეცნობი და მალე დაგიკავშირდებით.</span>
+        <span lang="ka">პასუხები გაიგზავნა. გავეცნობი და მალე დაგიკავშირდებით.</span>
         <span lang="en">Your answers are on their way. I'll read them and get back to you soon.</span>
       </p>
     </section>

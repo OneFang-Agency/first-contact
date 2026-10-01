@@ -10,9 +10,13 @@ Every piece of text is written twice in `index.html`, as `<span lang="ka">…</s
 
 Each submission includes a `language` field (`ka` or `en`) showing which language the client used.
 
+## Light / dark theme
+
+The page follows the visitor's system setting by default. They can override it with the System / Light / Dark switch at the top, and the choice is remembered. Colors are defined as CSS variables at the top of `styles.css`, once for light and once for dark.
+
 ## Adding a question
 
-In `index.html`, copy one `<div class="field question">` block and change:
+In `index.html`, copy one `<li class="question">` block inside `<ol class="questions">` and change:
 
 - `id` / `name` on the `<textarea>`. Use something unique, like `budget`. The `name` is the column title you'll see in Netlify.
 - `for` on the `<label>` so it matches the id.

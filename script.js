@@ -63,9 +63,14 @@
 
   // ---------- Theme: system (default), light or dark ----------
   const themeButtons = document.querySelectorAll('[data-set-theme]');
+  // Browser toolbar color on mobile follows the chosen theme
+  const themeMetas = document.querySelectorAll('meta[name="theme-color"]');
+  const THEME_COLORS = { light: '#f1f3f0', dark: '#141618' };
+  themeMetas.forEach((m) => { m.dataset.systemColor = m.content; });
   function setTheme(theme, remember) {
     if (theme === 'light' || theme === 'dark') document.documentElement.setAttribute('data-theme', theme);
     else document.documentElement.removeAttribute('data-theme');
+    themeMetas.forEach((m) => { m.content = THEME_COLORS[theme] || m.dataset.systemColor; });
     themeButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.setTheme === theme)));
     if (remember) {
       try {
@@ -127,6 +132,32 @@
   textareas.forEach(autosize);
   updateProgress();
   form.addEventListener('input', () => { saveDraft(); updateProgress(); });
+
+  // ---------- Mobile keyboard ----------
+  // Enter in a one-line field moves to the next field instead of submitting a half-filled form
+  const inputs = Array.from(form.querySelectorAll('.contact input'));
+  inputs.forEach((el, i) => {
+    el.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' || e.isComposing) return;
+      e.preventDefault();
+      if (inputs[i + 1]) inputs[i + 1].focus();
+      else el.blur();
+    });
+  });
+
+  // On small screens, keep the question's title visible above the on-screen keyboard
+  const smallScreen = window.matchMedia('(max-width: 720px)');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  form.addEventListener('focusin', (e) => {
+    if (!smallScreen.matches) return;
+    const block = e.target.closest('.question, .field');
+    if (!block) return;
+    // Wait for the keyboard to finish opening before scrolling
+    setTimeout(() => {
+      if (document.activeElement !== e.target) return;
+      block.scrollIntoView({ block: 'start', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+    }, 300);
+  });
 
   // ---------- Validation ----------
   function messageFor(el) {

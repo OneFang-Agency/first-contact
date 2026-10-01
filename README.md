@@ -8,7 +8,7 @@ The page is in Georgian by default, with English as the second language. Visitor
 
 Every piece of text is written twice in `index.html`, as `<span lang="ka">…</span><span lang="en">…</span>`, and the page shows the one matching the active language. Messages created by JavaScript (validation errors, "Sending…") are in the `MESSAGES` object at the top of `script.js`.
 
-Each submission includes a `language` field (`ka` or `en`) showing which language the client used.
+Each submission includes a `language` field (`ka` or `en`) showing which language the client used. Choice answers are submitted in that language, and the budget ranges differ: Georgian shows GEL, English (meant for international clients) shows USD.
 
 ## Light / dark theme
 
@@ -16,14 +16,21 @@ The page follows the visitor's system setting by default. They can override it w
 
 ## Adding a question
 
-In `index.html`, copy one `<li class="question">` block inside `<ol class="questions">` and change:
+In `index.html`, copy one `<li class="question">` block inside `<ol class="questions">`. Questions are numbered automatically. Write all text **in both languages** (`<span lang="ka">` and `<span lang="en">`).
 
-- `id` / `name` on the `<textarea>`. Use something unique, like `budget`. The `name` is the column title you'll see in Netlify.
-- `for` on the `<label>` so it matches the id.
-- The label text and the hint, **in both languages** (`<span lang="ka">` and `<span lang="en">`). The hint's `id` and `aria-describedby` should match.
+**Text answer** (has a `<textarea>`): change
+- `id` / `name` on the `<textarea>`. Use something unique, like `audience`. The `name` is the column title you'll see in Netlify.
+- `for` on the `<label>` so it matches the id, and the hint's `id` / `aria-describedby`.
 - To make it required, add `required` to the textarea, add a `<p class="error" id="<id>-error" aria-live="polite"></p>` below it, and add `<span class="req" aria-hidden="true">*</span>` to the label.
 
-Questions are numbered automatically.
+**Choice answer** (has a `<fieldset>` with chips): use `type="radio"` for pick-one and `type="checkbox"` for pick-any. On each option:
+- `name`: the same for all options of the question.
+- `data-key`: a short id that doesn't change between languages (used for saved drafts).
+- `value`: the Georgian text, and `data-en`: the English text. The one matching the page language is submitted; ticked checkboxes arrive as one comma-separated answer.
+
+A field that should appear only for some answers goes in a `<div class="field reveal" data-reveal="<name>" data-reveal-keys="<data-key> …" hidden>`, with its input `disabled`. See the date under "When do you need it?" and the phone number under contact.
+
+Also add the question to `TEXT` in `netlify/functions/submission-created.mjs` so it shows up in the email.
 
 ## Local preview
 

@@ -11,14 +11,24 @@ const TEXT = {
     subject: (name, company) => `New enquiry from ${name}${company ? ` (${company})` : ''}`,
     heading: 'New enquiry',
     questions: {
+      'project-type': 'What do you need?',
       business: 'Describe your business in a couple of sentences',
       goals: 'What are your goals with the website?',
       clients: 'Who are your clients?',
-      competitors: 'Who are your competitors?',
       'liked-websites': 'Do you have websites that you like?',
+      assets: 'What do you already have?',
+      budget: 'What budget do you have in mind?',
+      timeline: 'When do you need it?',
     },
     contact: 'Contact',
-    fields: { name: 'Name', email: 'Email', company: 'Company', 'current-website': 'Current website' },
+    fields: {
+      name: 'Name',
+      email: 'Email',
+      company: 'Company',
+      'current-website': 'Current website',
+      'contact-method': 'Prefers',
+      phone: 'Phone',
+    },
     empty: 'No answer',
     reply: 'Reply to this email to answer the client directly.',
   },
@@ -26,14 +36,24 @@ const TEXT = {
     subject: (name, company) => `ახალი განაცხადი: ${name}${company ? ` (${company})` : ''}`,
     heading: 'ახალი განაცხადი',
     questions: {
+      'project-type': 'რა გჭირდებათ?',
       business: 'აღწერეთ თქვენი ბიზნესი რამდენიმე წინადადებით',
       goals: 'რა მიზნები გაქვთ ვებსაიტთან დაკავშირებით?',
       clients: 'ვინ არიან თქვენი კლიენტები?',
-      competitors: 'ვინ არიან თქვენი კონკურენტები?',
       'liked-websites': 'არის ვებსაიტები, რომლებიც მოგწონთ?',
+      assets: 'რა გაქვთ უკვე მზად?',
+      budget: 'რა ბიუჯეტს ვარაუდობთ?',
+      timeline: 'როდის გჭირდებათ?',
     },
     contact: 'კონტაქტი',
-    fields: { name: 'სახელი', email: 'ელ. ფოსტა', company: 'კომპანია', 'current-website': 'არსებული ვებსაიტი' },
+    fields: {
+      name: 'სახელი',
+      email: 'ელ. ფოსტა',
+      company: 'კომპანია',
+      'current-website': 'არსებული ვებსაიტი',
+      'contact-method': 'სასურველი არხი',
+      phone: 'ტელეფონი',
+    },
     empty: 'პასუხი არ არის',
     reply: 'კლიენტს პირდაპირ უპასუხებთ ამ წერილზე პასუხით.',
   },
@@ -60,6 +80,13 @@ const escape = (s) =>
 
 const clean = (v) => (typeof v === 'string' ? v.trim() : '');
 
+// The answer to show for a question; a deadline is added to "By a specific date"
+function answer(data, key) {
+  const value = clean(data[key]);
+  if (key === 'timeline' && value && clean(data.deadline)) return `${value}: ${clean(data.deadline)}`;
+  return value;
+}
+
 function answerHtml(value, t, f, size) {
   if (!value) {
     return `<div style="font-family:${f.answer};font-size:15px;color:${C.muted};">${t.empty}</div>`;
@@ -76,7 +103,7 @@ function buildHtml(data, lang) {
       ([key, label], i) => `
       <tr><td style="padding:24px 0;border-top:1px solid ${C.rule};">
         <div style="font-family:${f.title};font-size:13px;font-weight:600;letter-spacing:0.02em;color:${C.accent};margin:0 0 8px;">${i + 1}. ${escape(label)}</div>
-        ${answerHtml(clean(data[key]), t, f, 17)}
+        ${answerHtml(answer(data, key), t, f, 17)}
       </td></tr>`
     )
     .join('');
@@ -132,7 +159,7 @@ function buildText(data, lang) {
   return [
     t.heading.toUpperCase(),
     '',
-    ...Object.entries(t.questions).map(([key, label], i) => block(`${i + 1}. ${label}`, clean(data[key]))),
+    ...Object.entries(t.questions).map(([key, label], i) => block(`${i + 1}. ${label}`, answer(data, key))),
     `— ${t.contact} —`,
     ...Object.entries(t.fields).map(([key, label]) => `${label}: ${clean(data[key]) || '—'}`),
   ].join('\n');

@@ -69,10 +69,24 @@
       </p>
 
       <!-- ===== Questions =====
-           To add a question: copy one <div class="question"> block,
-           give it a unique id / name, and write the label and hint in both
-           <span lang="ka"> and <span lang="en">. Numbering is automatic. -->
+           Text question: copy a <li class="question"> with a <textarea>.
+           Choice question: copy one with a <fieldset>. Each option's `value` is the
+           Georgian text and `data-en` the English text; the one matching the page
+           language is what gets submitted. `data-key` is a language-independent id.
+           Write all visible text in both <span lang="ka"> and <span lang="en">.
+           Numbering is automatic. -->
       <ol class="questions">
+        <li class="question">
+          <fieldset>
+            <legend><span lang="ka">რა გჭირდებათ?</span><span lang="en">What do you need?</span></legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="project-type" data-key="new" value="ახალი ვებსაიტი" data-en="A new website"><span class="chip"><span lang="ka">ახალი ვებსაიტი</span><span lang="en">A new website</span></span></label>
+              <label class="choice"><input type="radio" name="project-type" data-key="redesign" value="არსებული საიტის განახლება" data-en="A redesign of my current site"><span class="chip"><span lang="ka">არსებული საიტის განახლება</span><span lang="en">A redesign of my current site</span></span></label>
+              <label class="choice"><input type="radio" name="project-type" data-key="unsure" value="ჯერ არ ვიცი" data-en="Not sure yet"><span class="chip"><span lang="ka">ჯერ არ ვიცი</span><span lang="en">Not sure yet</span></span></label>
+            </div>
+          </fieldset>
+        </li>
+
         <li class="question">
           <label for="business"><span lang="ka">აღწერეთ თქვენი ბიზნესი რამდენიმე წინადადებით</span><span lang="en">Describe your business in a couple of sentences</span><span class="req" aria-hidden="true">*</span></label>
           <p class="hint" id="business-hint"><span lang="ka">რას აკეთებთ და რით გამოირჩევით.</span><span lang="en">What you do, and what makes you different.</span></p>
@@ -94,15 +108,56 @@
         </li>
 
         <li class="question">
-          <label for="competitors"><span lang="ka">ვინ არიან თქვენი კონკურენტები?</span><span lang="en">Who are your competitors?</span></label>
-          <p class="hint" id="competitors-hint"><span lang="ka">სახელები ან ბმულები. მიახლოებითიც კარგია.</span><span lang="en">Names or links. Rough is fine.</span></p>
-          <textarea autocapitalize="sentences" id="competitors" name="competitors" rows="3" aria-describedby="competitors-hint"></textarea>
+          <label for="liked-websites"><span lang="ka">არის ვებსაიტები, რომლებიც მოგწონთ?</span><span lang="en">Do you have websites that you like?</span></label>
+          <p class="hint" id="liked-websites-hint"><span lang="ka">ჩასვით ბმულები და მიუთითეთ, რა მოგწონთ თითოეულში: დიზაინი, განწყობა, რომელიმე ფუნქცია. კონკურენტების საიტებიც გამოდგება.</span><span lang="en">Paste links and say what you like about each one: the look, the feel, a feature. Competitors’ sites count too.</span></p>
+          <textarea autocapitalize="sentences" id="liked-websites" name="liked-websites" rows="3" aria-describedby="liked-websites-hint"></textarea>
         </li>
 
         <li class="question">
-          <label for="liked-websites"><span lang="ka">არის ვებსაიტები, რომლებიც მოგწონთ?</span><span lang="en">Do you have websites that you like?</span></label>
-          <p class="hint" id="liked-websites-hint"><span lang="ka">ჩასვით ბმულები და მიუთითეთ, რა მოგწონთ თითოეულში: დიზაინი, განწყობა, რომელიმე ფუნქცია.</span><span lang="en">Paste links and say what you like about each one: the look, the feel, a feature.</span></p>
-          <textarea autocapitalize="sentences" id="liked-websites" name="liked-websites" rows="3" aria-describedby="liked-websites-hint"></textarea>
+          <fieldset aria-describedby="assets-hint">
+            <legend><span lang="ka">რა გაქვთ უკვე მზად?</span><span lang="en">What do you already have?</span></legend>
+            <p class="hint" id="assets-hint"><span lang="ka">მონიშნეთ ყველა, რაც გაქვთ.</span><span lang="en">Select all that apply.</span></p>
+            <div class="choices">
+              <label class="choice"><input type="checkbox" name="assets" data-key="brand" value="ლოგო ან ბრენდის სტილი" data-en="Logo or brand style"><span class="chip"><span lang="ka">ლოგო ან ბრენდის სტილი</span><span lang="en">Logo or brand style</span></span></label>
+              <label class="choice"><input type="checkbox" name="assets" data-key="text" value="ტექსტები" data-en="Written text"><span class="chip"><span lang="ka">ტექსტები</span><span lang="en">Written text</span></span></label>
+              <label class="choice"><input type="checkbox" name="assets" data-key="photos" value="ფოტოები" data-en="Photos"><span class="chip"><span lang="ka">ფოტოები</span><span lang="en">Photos</span></span></label>
+              <label class="choice"><input type="checkbox" name="assets" data-key="domain" value="დომენი ან ჰოსტინგი" data-en="Domain or hosting"><span class="chip"><span lang="ka">დომენი ან ჰოსტინგი</span><span lang="en">Domain or hosting</span></span></label>
+              <!-- data-exclusive: ticking it clears the others, and ticking another clears it -->
+              <label class="choice"><input type="checkbox" name="assets" data-key="nothing" data-exclusive value="ჯერ არაფერი" data-en="Nothing yet"><span class="chip"><span lang="ka">ჯერ არაფერი</span><span lang="en">Nothing yet</span></span></label>
+            </div>
+          </fieldset>
+        </li>
+
+        <li class="question">
+          <!-- Georgian visitors see GEL ranges, English visitors (usually international) see USD -->
+          <fieldset aria-describedby="budget-hint">
+            <legend><span lang="ka">რა ბიუჯეტს ვარაუდობთ?</span><span lang="en">What budget do you have in mind?</span></legend>
+            <p class="hint" id="budget-hint"><span lang="ka">მიახლოებითი დიაპაზონიც საკმარისია, რომ შესაბამისი გადაწყვეტა შემოგთავაზოთ.</span><span lang="en">A rough range is enough. It helps us suggest something that fits.</span></p>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="budget" data-key="1" value="2 000 ₾-მდე" data-en="Under $2,000"><span class="chip"><span lang="ka">2 000 ₾-მდე</span><span lang="en">Under $2,000</span></span></label>
+              <label class="choice"><input type="radio" name="budget" data-key="2" value="2 000–5 000 ₾" data-en="$2,000–5,000"><span class="chip"><span lang="ka">2 000–5 000 ₾</span><span lang="en">$2,000–5,000</span></span></label>
+              <label class="choice"><input type="radio" name="budget" data-key="3" value="5 000–10 000 ₾" data-en="$5,000–10,000"><span class="chip"><span lang="ka">5 000–10 000 ₾</span><span lang="en">$5,000–10,000</span></span></label>
+              <label class="choice"><input type="radio" name="budget" data-key="4" value="10 000 ₾-ზე მეტი" data-en="Over $10,000"><span class="chip"><span lang="ka">10 000 ₾-ზე მეტი</span><span lang="en">Over $10,000</span></span></label>
+              <label class="choice"><input type="radio" name="budget" data-key="unsure" value="ჯერ არ ვიცი" data-en="Not sure yet"><span class="chip"><span lang="ka">ჯერ არ ვიცი</span><span lang="en">Not sure yet</span></span></label>
+            </div>
+          </fieldset>
+        </li>
+
+        <li class="question">
+          <fieldset>
+            <legend><span lang="ka">როდის გჭირდებათ?</span><span lang="en">When do you need it?</span></legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="timeline" data-key="asap" value="რაც შეიძლება მალე" data-en="As soon as possible"><span class="chip"><span lang="ka">რაც შეიძლება მალე</span><span lang="en">As soon as possible</span></span></label>
+              <label class="choice"><input type="radio" name="timeline" data-key="months" value="1–3 თვეში" data-en="In 1–3 months"><span class="chip"><span lang="ka">1–3 თვეში</span><span lang="en">In 1–3 months</span></span></label>
+              <label class="choice"><input type="radio" name="timeline" data-key="no-rush" value="არ მეჩქარება" data-en="No rush"><span class="chip"><span lang="ka">არ მეჩქარება</span><span lang="en">No rush</span></span></label>
+              <label class="choice"><input type="radio" name="timeline" data-key="date" value="კონკრეტული თარიღისთვის" data-en="By a specific date"><span class="chip"><span lang="ka">კონკრეტული თარიღისთვის</span><span lang="en">By a specific date</span></span></label>
+            </div>
+            <!-- Shown only when "By a specific date" is picked -->
+            <div class="field reveal" data-reveal="timeline" data-reveal-keys="date" hidden>
+              <label for="deadline"><span lang="ka">რომელი თარიღი და რა ხდება მაშინ?</span><span lang="en">Which date, and what’s happening then?</span></label>
+              <input id="deadline" name="deadline" type="text" autocapitalize="sentences" enterkeyhint="done" disabled>
+            </div>
+          </fieldset>
         </li>
       </ol>
 
@@ -133,6 +188,22 @@
             <input id="current-website" name="current-website" type="text" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="example.com">
           </div>
         </div>
+
+        <fieldset class="contact-method">
+          <legend><span lang="ka">როგორ გირჩევნიათ დაკავშირება?</span><span lang="en">What’s the best way to reach you?</span></legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="contact-method" data-key="email" value="ელ. ფოსტა" data-en="Email"><span class="chip"><span lang="ka">ელ. ფოსტა</span><span lang="en">Email</span></span></label>
+            <label class="choice"><input type="radio" name="contact-method" data-key="call" value="ზარი" data-en="Phone call"><span class="chip"><span lang="ka">ზარი</span><span lang="en">Phone call</span></span></label>
+            <label class="choice"><input type="radio" name="contact-method" data-key="whatsapp" value="WhatsApp" data-en="WhatsApp"><span class="chip">WhatsApp</span></label>
+            <label class="choice"><input type="radio" name="contact-method" data-key="telegram" value="Telegram" data-en="Telegram"><span class="chip">Telegram</span></label>
+          </div>
+          <!-- Shown, and required, only when a phone-based option is picked -->
+          <div class="field reveal" data-reveal="contact-method" data-reveal-keys="call whatsapp telegram" hidden>
+            <label for="phone"><span lang="ka">ტელეფონის ნომერი</span><span lang="en">Phone number</span><span class="req" aria-hidden="true">*</span></label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" enterkeyhint="done" required disabled aria-describedby="phone-error">
+            <p class="error" id="phone-error" aria-live="polite"></p>
+          </div>
+        </fieldset>
       </section>
 
       <div class="actions">
